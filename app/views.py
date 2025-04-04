@@ -3,6 +3,8 @@ from django.shortcuts import redirect, render
 from django.views.generic import DetailView, ListView, View
 
 from .models import Note
+# from .methods import do_something
+from .tasks import task_do_something
 
 
 class NoteListView(ListView):
@@ -25,5 +27,8 @@ class NoteCreateView(View):
         title = request.POST.get("title")
         content = request.POST.get("content")
 
-        Note.objects.create(title=title, content=content)
+        # do_something() # misal pakai ini akan nunggu sesuai waktu di methods.py
+        task_do_something() # berjalan di background -> Queue (Antrian)
+
+        Note.objects.create(title=title, content=content, user=request.user)
         return redirect("index")
